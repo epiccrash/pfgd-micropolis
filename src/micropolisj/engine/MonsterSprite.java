@@ -152,9 +152,16 @@ public class MonsterSprite extends Sprite
 
 		assert this.frame >= 1 && this.frame <= 16;
 		
-		// CHANGED: Checks if tile is a river before incrementing x and y
-		if (getChar(this.x + Gx[d], this.y + Gy[d]) < 2 || 
-				getChar(this.x + Gx[d], this.y + Gy[d]) > 5) {
+		// CHANGED: Resolves d if it would lead to an index out of bounds error 
+		// (just sets it to 4 so it grabs 0)
+		if (d > 4 || d < 0) {
+			d = 4;
+		}
+		// CHANGED: Checks if tile is a river before incrementing x and y, also accounts for LASTRIVEDGE
+		// NOTE: Monsters will still sometimes dip into water border, but they will turn back immediately (so a non-issue)
+		if ((getChar(this.x + Gx[d], this.y + Gy[d]) < RIVER || 
+				getChar(this.x + Gx[d], this.y + Gy[d]) > RIVEDGE) &&
+				getChar(this.x + Gx[d], this.y + Gy[d]) != LASTRIVEDGE) {
 			this.x += Gx[d];
 			this.y += Gy[d];
 		}

@@ -2328,8 +2328,10 @@ public class Micropolis
 			monster.flag = false;
 			monster.destX = pollutionMaxLocationX;
 			monster.destY = pollutionMaxLocationY;
-			return;
+			// CHANGED: Getting rid of the return allows multiple monsters to spawn
+			//return;
 		}
+		System.out.println("Monster");
 
 		// try to find a suitable starting spot for monster
 

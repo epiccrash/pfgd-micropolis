@@ -10,6 +10,8 @@ package micropolisj.engine;
 
 import static micropolisj.engine.TileConstants.*;
 
+import java.util.Random;
+
 public class ToolStroke
 {
 	final Micropolis city;
@@ -68,7 +70,7 @@ public class ToolStroke
 		case PARK:
 			return applyParkTool(eff);
 			
-		// New tool
+		// CHANGED: New water tool
 		case WATER:
 			return applyWaterTool(eff);
 
@@ -236,7 +238,7 @@ public class ToolStroke
 		return true;
 	}
 	
-	// New method created
+	// CHANGED: New method created (copied from park tool method above)
 	boolean applyWaterTool(ToolEffectIfc eff)
 	{
 		int cost = tool.getToolCost();
