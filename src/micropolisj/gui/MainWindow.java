@@ -645,6 +645,18 @@ public class MainWindow extends JFrame
 			}));
 		disastersMenu.add(menuItem);
 
+		// New Tornado added
+		menuItem = new JMenuItem(strings.getString("menu.disasters.FIRE_WHIRL"));
+		setupKeys(menuItem, "menu.disasters.FIRE_WHIRL");
+		menuItem.addActionListener(wrapActionListener(
+			new ActionListener() {
+			public void actionPerformed(ActionEvent ev)
+			{
+				onInvokeDisasterClicked(Disaster.TORNADO);
+			}
+			}));
+		disastersMenu.add(menuItem);
+
 		menuItem = new JMenuItem(strings.getString("menu.disasters.EARTHQUAKE"));
 		setupKeys(menuItem, "menu.disasters.EARTHQUAKE");
 		menuItem.addActionListener(wrapActionListener(
@@ -1003,6 +1015,7 @@ public class MainWindow extends JFrame
 		b0.add(makeToolBtn(MicropolisTool.BULLDOZER));
 		b0.add(makeToolBtn(MicropolisTool.WIRE));
 		b0.add(makeToolBtn(MicropolisTool.PARK));
+		b0.add(makeToolBtn(MicropolisTool.WATER));
 
 		c.gridy++;
 		Box b1 = new Box(BoxLayout.X_AXIS);
@@ -1538,6 +1551,9 @@ public class MainWindow extends JFrame
 			break;
 		case TORNADO:
 			getEngine().makeTornado();
+			break;
+		case FIRE_WHIRL:
+			getEngine().makeFireWhirl();
 			break;
 		case EARTHQUAKE:
 			getEngine().makeEarthquake();

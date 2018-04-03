@@ -10,9 +10,9 @@
 0     terrain@0,0                     (noburn)(description=#0)
 1     terrain@0,16                    (noburn)
 # BEGIN WATER AND RIVER EDGE #
-2     terrain@0,32                    (noburn)(description=#1)
-3     terrain@0,48                    (noburn)(description=#1)
-4     terrain@0,64                    (noburn)(description=#1)
+2     terrain@0,32                    (bulldozable)(noburn)(description=#1)
+3     terrain@0,48                    (bulldozable)(noburn)(description=#1)
+4     terrain@0,64                    (bulldozable)(noburn)(description=#1)
 5     terrain@0,80                    (bulldozable)(noburn)(description=#1)
 6     terrain@0,96                    (bulldozable)(noburn)(description=#1)
 7     terrain@0,112                   (bulldozable)(noburn)(description=#1)
@@ -1009,3 +1009,4 @@
 957   misc_animation@0,2080
 958   misc_animation@0,2096
 959   misc_animation@0,2112
+# BEGIN NEW BUILDING #

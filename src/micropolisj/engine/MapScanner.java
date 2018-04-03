@@ -42,6 +42,7 @@ class MapScanner extends TileBehavior
 		STADIUM_FULL,
 		AIRPORT,
 		SEAPORT;
+		//NEW_BUILDING;
 	}
 
 	@Override

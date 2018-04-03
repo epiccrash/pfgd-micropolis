@@ -18,5 +18,6 @@ public enum Disaster
 	FLOOD,
 	MELTDOWN,
 	TORNADO,
-	EARTHQUAKE;
+	EARTHQUAKE, 
+	FIRE_WHIRL;
 }

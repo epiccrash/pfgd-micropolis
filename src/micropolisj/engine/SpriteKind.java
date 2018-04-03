@@ -20,7 +20,8 @@ public enum SpriteKind
 	GOD(5,16),
 	TOR(6,3),
 	EXP(7,6),
-	BUS(8,4);
+	BUS(8,4),
+	WRL(9,3); // Sprite number, number of frames
 
 	public final int objectId;
 	public final int numFrames;

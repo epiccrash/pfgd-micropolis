@@ -1461,6 +1461,7 @@ public class Micropolis
 		bb.put("INDUSTRIAL", new MapScanner(this, MapScanner.B.INDUSTRIAL));
 		bb.put("COAL", new MapScanner(this, MapScanner.B.COAL));
 		bb.put("NUCLEAR", new MapScanner(this, MapScanner.B.NUCLEAR));
+		/* bb.put("NEW BUILDING", new MapScanner(this, MapScanner.B.NEW_BUILDING)) */
 		bb.put("FIRESTATION", new MapScanner(this, MapScanner.B.FIRESTATION));
 		bb.put("POLICESTATION", new MapScanner(this, MapScanner.B.POLICESTATION));
 		bb.put("STADIUM_EMPTY", new MapScanner(this, MapScanner.B.STADIUM_EMPTY));
@@ -2319,6 +2320,7 @@ public class Micropolis
 	public void makeMonster()
 	{
 		MonsterSprite monster = (MonsterSprite) getSprite(SpriteKind.GOD);
+		
 		if (monster != null) {
 			// already have a monster in town
 			monster.soundCount = 1;
@@ -2335,7 +2337,8 @@ public class Micropolis
 			int x = PRNG.nextInt(getWidth() - 19) + 10;
 			int y = PRNG.nextInt(getHeight() - 9) + 5;
 			int t = getTile(x, y);
-			if (t == RIVER) {
+			// CHANGED from == to !=
+			if (t != RIVER) {
 				makeMonsterAt(x, y);
 				return;
 			}
@@ -2365,6 +2368,23 @@ public class Micropolis
 		int xpos = PRNG.nextInt(getWidth() - 19) + 10;
 		int ypos = PRNG.nextInt(getHeight() - 19) + 10;
 		sprites.add(new TornadoSprite(this, xpos, ypos));
+		sendMessageAt(MicropolisMessage.TORNADO_REPORT, xpos, ypos);
+	}
+	
+	public void makeFireWhirl()
+	{
+		FireWhirlSprite fireWhirl = (FireWhirlSprite) getSprite(SpriteKind.TOR);
+		if (fireWhirl != null) {
+			// already have a tornado, so extend the length of the
+			// existing tornado
+			fireWhirl.count = 200;
+			return;
+		}
+
+		//FIXME- this is not exactly like the original code
+		int xpos = PRNG.nextInt(getWidth() - 19) + 10;
+		int ypos = PRNG.nextInt(getHeight() - 19) + 10;
+		sprites.add(new FireWhirlSprite(this, xpos, ypos));
 		sendMessageAt(MicropolisMessage.TORNADO_REPORT, xpos, ypos);
 	}
 

@@ -99,12 +99,14 @@ public class MonsterSprite extends Sprite
 					destX = origX;
 					destY = origY;
 				}
+				// CHANGED: Now monster doesn't die
+				/*
 				else {
 					// destination was origX, origY;
 					// hide the sprite
 					this.frame = 0;
 					return;
-				}
+				}*/
 			}
 
 			int c = getDir(x, y, destX, destY);
@@ -144,28 +146,38 @@ public class MonsterSprite extends Sprite
 
 				assert d < 4;
 			}
-			else {
-				d = 4;
-			}
 		}
-
+		
 		this.frame = ((d * 3) + z) + 1;
 
 		assert this.frame >= 1 && this.frame <= 16;
-
-		this.x += Gx[d];
-		this.y += Gy[d];
+		
+		// CHANGED: Checks if tile is a river before incrementing x and y
+		if (getChar(this.x + Gx[d], this.y + Gy[d]) < 2 || 
+				getChar(this.x + Gx[d], this.y + Gy[d]) > 5) {
+			this.x += Gx[d];
+			this.y += Gy[d];
+		}
+		// CHANGED
+		// If tile is not a river and the frame is greater than 2, subtract 2 from the frame
+		// Prevents monster getting stuck
+		else {
+			if (this.frame > 2) {
+				this.frame -= 2;
+			}
+		}
 
 		if (this.count > 0) {
 			this.count--;
 		}
-
+		// CHANGED: Now monster doesn't die
+		/*
 		int c = getChar(x, y);
 		if (c == -1 ||
 			(c == RIVER && this.count != 0 && false)
 			) {
 			this.frame = 0; //kill zilla
-		}
+		}*/
 
 		for (Sprite s : city.allSprites())
 		{

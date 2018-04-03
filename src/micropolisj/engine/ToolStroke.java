@@ -67,6 +67,10 @@ public class ToolStroke
 		{
 		case PARK:
 			return applyParkTool(eff);
+			
+		// New tool
+		case WATER:
+			return applyWaterTool(eff);
 
 		case RESIDENTIAL:
 			return applyZone(eff, RESCLR);
@@ -225,6 +229,39 @@ public class ToolStroke
 		} else {
 			tile = FOUNTAIN;
 		}
+
+		eff.spend(cost);
+		eff.setTile(0, 0, tile);
+
+		return true;
+	}
+	
+	// New method created
+	boolean applyWaterTool(ToolEffectIfc eff)
+	{
+		int cost = tool.getToolCost();
+
+		if (eff.getTile(0, 0) != DIRT) {
+			// some sort of bulldozing is necessary
+			if (!city.autoBulldoze) {
+				eff.toolResult(ToolResult.UH_OH);
+				return false;
+			}
+
+			//FIXME- use a canAutoBulldoze-style function here
+			if (isRubble(eff.getTile(0, 0))) {
+				// this tile can be auto-bulldozed
+				cost++;
+			}
+			else {
+				// cannot be auto-bulldozed
+				eff.toolResult(ToolResult.UH_OH);
+				return false;
+			}
+		}
+
+		int z = inPreview ? 0 : city.PRNG.nextInt(3);
+		int tile = RIVER + z;
 
 		eff.spend(cost);
 		eff.setTile(0, 0, tile);
