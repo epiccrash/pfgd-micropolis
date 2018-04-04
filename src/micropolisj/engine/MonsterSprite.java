@@ -162,16 +162,29 @@ public class MonsterSprite extends Sprite
 		if ((getChar(this.x + Gx[d], this.y + Gy[d]) < RIVER || 
 				getChar(this.x + Gx[d], this.y + Gy[d]) > RIVEDGE) &&
 				getChar(this.x + Gx[d], this.y + Gy[d]) != LASTRIVEDGE) {
+			// Change the x and y values
 			this.x += Gx[d];
 			this.y += Gy[d];
+			// getWidth and getHeight give the amount of tiles, but we care about pixels
+			// 16 represents the tile pixel width/height; - 1 keeps monster from breaking out
+			// Decrease x if changed values are less than zero or greater than the map width
+			if (this.x + Gx[d] < 0 || this.x + Gx[d] > city.getWidth() * 16 - 1) {
+				this.x -= Gx[d];
+				// Update frame if needed
+				changeFrame();
+			}
+			// Decrease x if changed values are less than zero or greater than the map height
+			if (this.y + Gy[d] < 0 || this.y + Gy[d] > city.getHeight() * 16 - 1) {
+				this.y -= Gy[d];
+				// Update frame if needed
+				changeFrame();
+			}
 		}
 		// CHANGED
 		// If tile is not a river and the frame is greater than 2, subtract 2 from the frame
 		// Prevents monster getting stuck
 		else {
-			if (this.frame > 2) {
-				this.frame -= 2;
-			}
+			changeFrame();
 		}
 
 		if (this.count > 0) {
@@ -199,5 +212,14 @@ public class MonsterSprite extends Sprite
 		}
 
 		destroyTile(x / 16, y / 16);
+	}
+	
+	/*
+	 * CHANGED: Added method that decreases the frame by 2 counts
+	 */
+	private void changeFrame() {
+		if (this.frame > 2) {
+			this.frame -= 2;
+		}
 	}
 }

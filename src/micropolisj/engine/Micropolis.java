@@ -2331,7 +2331,6 @@ public class Micropolis
 			// CHANGED: Getting rid of the return allows multiple monsters to spawn
 			//return;
 		}
-		System.out.println("Monster");
 
 		// try to find a suitable starting spot for monster
 
