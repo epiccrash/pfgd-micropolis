@@ -159,9 +159,8 @@ public class MonsterSprite extends Sprite
 		}
 		// CHANGED: Checks if tile is a river before incrementing x and y, also accounts for LASTRIVEDGE
 		// NOTE: Monsters will still sometimes dip into water border, but they will turn back immediately (so a non-issue)
-		if ((getChar(this.x + Gx[d], this.y + Gy[d]) < RIVER || 
-				getChar(this.x + Gx[d], this.y + Gy[d]) > RIVEDGE) &&
-				getChar(this.x + Gx[d], this.y + Gy[d]) != LASTRIVEDGE) {
+		if (getChar(this.x + Gx[d], this.y + Gy[d]) < RIVER ||
+				getChar(this.x + Gx[d], this.y + Gy[d]) > LASTRIVEDGE) {
 			// Change the x and y values
 			this.x += Gx[d];
 			this.y += Gy[d];
@@ -215,11 +214,15 @@ public class MonsterSprite extends Sprite
 	}
 	
 	/*
-	 * CHANGED: Added method that decreases the frame by 2 counts
-	 */
+	 * CHANGED: Added method that changes the frame
+	 */              
 	private void changeFrame() {
-		if (this.frame > 2) {
-			this.frame -= 2;
+		// Create a test frame
+		int testFrame = city.PRNG.nextInt(15) + 1;
+		// Loop until the test frame is a different one from the current one
+		while (testFrame == this.frame) {
+			testFrame = city.PRNG.nextInt(15) + 1;
 		}
+		this.frame = testFrame;
 	}
 }

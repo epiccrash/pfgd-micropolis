@@ -29,8 +29,8 @@ public enum MicropolisTool
 	POWERPLANT(4, 3000),
 	NUCLEAR(4, 5000),
 	AIRPORT(6, 10000),
-	// Template for new building
-	WATER(1, 5), // Added; marked by n (in NxN), cost
+	// CHANGED: Water tool added
+	WATER(1, 5000),
 	QUERY(1, 0);
 
 	int size;

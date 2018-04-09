@@ -199,6 +199,9 @@ public class Micropolis
 	public static final int CENSUSRATE = 4;
 	static final int TAXFREQ = 48;
 
+	// CHANGED: Added variable to keep track of the amount of monsters
+	int monsterCount = 0;
+	
 	public void spend(int amount)
 	{
 		budget.totalFunds -= amount;
@@ -914,7 +917,8 @@ public class Micropolis
 			break;
 		case 7:
 		case 8:
-			if (pollutionAverage > 60) {
+			// CHANGED: from 60 to 80
+			if (pollutionAverage > 80) {
 				makeMonster();
 			}
 			break;
@@ -2321,6 +2325,7 @@ public class Micropolis
 	{
 		MonsterSprite monster = (MonsterSprite) getSprite(SpriteKind.GOD);
 		
+		// CHANGED: monsterCount used to dictate how many monsters can spawn on a difficulty level
 		if (monster != null) {
 			// already have a monster in town
 			monster.soundCount = 1;
@@ -2328,23 +2333,53 @@ public class Micropolis
 			monster.flag = false;
 			monster.destX = pollutionMaxLocationX;
 			monster.destY = pollutionMaxLocationY;
-			// CHANGED: Getting rid of the return allows multiple monsters to spawn
-			//return;
+			// CHANGED: return when max monster count is reached to prevent further monsters from spawning
+			if (monsterCount > gameLevel) {
+				return;
+			}
+			// CHANGED: Increase the monster count
+			monsterCount++;
 		}
-
+		
 		// try to find a suitable starting spot for monster
-
-		for (int i = 0; i < 300; i++) {
+		// CHANGED: from 300 to getWidth() * getHeight() to increase loop range (monster now basically guaranteed to spawn near city border)
+		for (int i = 0; i < getWidth() * getHeight(); i++) {
+			int x = PRNG.nextInt(getWidth() - 19) + 10;
+			int y = PRNG.nextInt(getHeight() - 9) + 5;
+			// CHANGED: Check for areas with a high population density to spawn monster near city border
+			if (getPopulationDensity(x, y) > 0) {
+				// CHANGED: x and y can differ in radii of 1
+				for (int j = -1; j < 2; j += 1) {
+					for (int k = -1; k < 2; k += 1) {
+						// CHANGED: Make sure the new x and y are within map bounds and have no population
+						if (testBounds(x + j, y + k) && getPopulationDensity(x + j, y + k) == 0) {
+							// CHANGED: Checks new x and y
+							int t = getTile(x + j, y + k);
+							// CHANGED: Spawn only on specific dirt or tree tiles
+							if ((t >= TREEBASE && t < WOODS2) || (t > WOODS5 && t <= LASTRUBBLE)) {
+								// CHANGED: Make a monster at the new x and y coordinates
+								makeMonsterAt(x + j, y + k);
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		// CHANGED: Copied from above, used in case a starting point near the city border really can't be found
+		for (int i = 0; i < getWidth() * getHeight(); i++) {
 			int x = PRNG.nextInt(getWidth() - 19) + 10;
 			int y = PRNG.nextInt(getHeight() - 9) + 5;
 			int t = getTile(x, y);
-			// CHANGED from == to !=
-			if (t != RIVER) {
+			// CHANGED: spawn as long as t is not a water tile
+			if (t < RIVER || t > LASTRIVEDGE) {
 				makeMonsterAt(x, y);
 				return;
 			}
 		}
-
+		
+		// CHANGED: Is now ultimate fallback; the two above for loops should take care of spawning, so this should never be executed
 		// no "nice" location found, just start in center of map then
 		makeMonsterAt(getWidth()/2, getHeight()/2);
 	}
@@ -2601,7 +2636,8 @@ public class Micropolis
 			}
 			break;
 		case 35:
-			if (pollutionAverage > 60) { // FIXME, consider changing threshold to 80
+			// CHANGED from 60 to 80
+			if (pollutionAverage > 80) { 
 				sendMessage(MicropolisMessage.HIGH_POLLUTION);
 			}
 			break;
