@@ -21,7 +21,8 @@ public enum SpriteKind
 	TOR(6,3),
 	EXP(7,6),
 	BUS(8,4),
-	WRL(9,3); // Sprite number, number of frames
+	// CHANGED: Added for baby monster
+	BABYGOD(9,16);
 
 	public final int objectId;
 	public final int numFrames;

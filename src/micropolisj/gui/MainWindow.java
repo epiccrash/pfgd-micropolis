@@ -1552,9 +1552,6 @@ public class MainWindow extends JFrame
 		case TORNADO:
 			getEngine().makeTornado();
 			break;
-		case FIRE_WHIRL:
-			getEngine().makeFireWhirl();
-			break;
 		case EARTHQUAKE:
 			getEngine().makeEarthquake();
 			break;

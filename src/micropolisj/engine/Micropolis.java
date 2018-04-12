@@ -652,8 +652,43 @@ public class Micropolis
 		case 15:
 			fireAnalysis();
 			doDisasters();
+			// NOTE: Structure for spawning in a baby monster, doesn't work
+			// (probably because it uses same monster sprite or because it has to be implemented a certain way)
+			// CHANGED: Used to spawn in baby monsters
+			if (monsterCount >= 1) {
+				// List of monster sprites built up
+				List<MonsterSprite> monsterList = new ArrayList<MonsterSprite>();
+				for (Sprite s : allSprites()) {
+					if (s instanceof MonsterSprite && !(s instanceof BabyMonsterSprite)) {
+						monsterList.add((MonsterSprite) s);
+					}
+				}
+				// Compare distance of every different sprite
+				for (Sprite m1 : monsterList) {
+					for (Sprite m2 : monsterList) {
+						if ((m1.x != m2.x || m1.y != m2.y) && distance(m1.x, m1.y, m2.x, m2.y) <= 48) {
+							// scycle used as filler for timing (replace later with actual two-month period)
+							if (PRNG.nextInt(4) == 0 && scycle % 16 == 15) {
+								// Randomly choose spawn point
+								int parent = PRNG.nextInt(2);
+								int xBaby, yBaby;
+								if (parent == 0) {
+									xBaby = m1.x;
+									yBaby = m1.y;
+								}
+								else {
+									xBaby = m2.x;
+									yBaby = m2.y;
+								}
+								// Create the baby monster (doesn't work, so it's commented out)
+								// makeBabyMonster(xBaby, yBaby);
+								return;
+							}
+						}
+					}
+				}
+			}
 			break;
-
 		default:
 			throw new Error("unreachable");
 		}
@@ -883,7 +918,7 @@ public class Micropolis
 
 		fireMapOverlayDataChanged(MapState.POLICE_OVERLAY);
 	}
-
+	
 	void doDisasters()
 	{
 		if (floodCnt > 0) {
@@ -925,6 +960,11 @@ public class Micropolis
 		}
 	}
 
+	// CHANGED: Checks distance between monsters to spawn baby
+	private double distance(int x, int y, int x2, int y2) {
+		return Math.pow(Math.pow(x - x2, 2) + Math.pow(y - y2, 2), 0.5);
+	}
+	
 	private int[][] smoothFirePoliceMap(int[][] omap)
 	{
 		int smX = omap[0].length;
@@ -2326,7 +2366,7 @@ public class Micropolis
 		MonsterSprite monster = (MonsterSprite) getSprite(SpriteKind.GOD);
 		
 		// CHANGED: monsterCount used to dictate how many monsters can spawn on a difficulty level
-		if (monster != null) {
+		if (monster != null && monsterCount < gameLevel + 2) {
 			// already have a monster in town
 			monster.soundCount = 1;
 			monster.count = 1000;
@@ -2355,8 +2395,8 @@ public class Micropolis
 						if (testBounds(x + j, y + k) && getPopulationDensity(x + j, y + k) == 0) {
 							// CHANGED: Checks new x and y
 							int t = getTile(x + j, y + k);
-							// CHANGED: Spawn only on specific dirt or tree tiles
-							if ((t >= TREEBASE && t < WOODS2) || (t > WOODS5 && t <= LASTRUBBLE)) {
+							// CHANGED: Spawn only on specific dirt and rubble tiles
+							if ((t >= CLEAR && t < RIVER) || (t > WOODS5 && t <= LASTRUBBLE)) {
 								// CHANGED: Make a monster at the new x and y coordinates
 								makeMonsterAt(x + j, y + k);
 								return;
@@ -2389,6 +2429,29 @@ public class Micropolis
 		assert !hasSprite(SpriteKind.GOD);
 		sprites.add(new MonsterSprite(this, xpos, ypos));
 	}
+	
+	// CHANGED: Initializes a baby monster
+	public void makeBabyMonster(int xpos, int ypos)
+	{
+		BabyMonsterSprite babyMonster = (BabyMonsterSprite) getSprite(SpriteKind.BABYGOD);
+		
+		if (babyMonster != null) {
+			// already have a monster in town
+			babyMonster.soundCount = 1;
+			babyMonster.count = 1000;
+			babyMonster.flag = false;
+			babyMonster.destX = pollutionMaxLocationX;
+			babyMonster.destY = pollutionMaxLocationY;
+			return;
+		}
+		makeBabyMonsterAt(xpos, ypos);
+	}
+
+	// CHANGED: Spawns a baby monster
+	void makeBabyMonsterAt(int xpos, int ypos)
+	{
+		sprites.add(new BabyMonsterSprite(this, xpos, ypos));
+	}
 
 	public void makeTornado()
 	{
@@ -2404,23 +2467,6 @@ public class Micropolis
 		int xpos = PRNG.nextInt(getWidth() - 19) + 10;
 		int ypos = PRNG.nextInt(getHeight() - 19) + 10;
 		sprites.add(new TornadoSprite(this, xpos, ypos));
-		sendMessageAt(MicropolisMessage.TORNADO_REPORT, xpos, ypos);
-	}
-	
-	public void makeFireWhirl()
-	{
-		FireWhirlSprite fireWhirl = (FireWhirlSprite) getSprite(SpriteKind.TOR);
-		if (fireWhirl != null) {
-			// already have a tornado, so extend the length of the
-			// existing tornado
-			fireWhirl.count = 200;
-			return;
-		}
-
-		//FIXME- this is not exactly like the original code
-		int xpos = PRNG.nextInt(getWidth() - 19) + 10;
-		int ypos = PRNG.nextInt(getHeight() - 19) + 10;
-		sprites.add(new FireWhirlSprite(this, xpos, ypos));
 		sendMessageAt(MicropolisMessage.TORNADO_REPORT, xpos, ypos);
 	}
 
